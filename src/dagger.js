@@ -48,7 +48,7 @@
 			return sourceObj;
 		}
 		for (var key in targetObj) {
-			sourceObj[key] = targetObj[key];
+			if (targetObj.hasOwnProperty(key)) sourceObj[key] = targetObj[key];
 		}
 		return sourceObj;
 	};
@@ -78,6 +78,11 @@
 				result.push(callback.call(context, key, val, index, obj2));
 			});
 			return result; // Ret Type === Array
+		},
+		unique: function(arr) {
+			return arr.reduce(function(mem, item) {
+				return Dagger.isArray(mem) ? ( mem.indexOf(item) > -1 ? mem : mem.concat(item) ) : ( [mem].concat(item) );
+			});
 		},
 		values: function(obj) {
 			return Dagger.keys(obj).map(function(key) { return obj[key]; }); // Ret Type === Array
