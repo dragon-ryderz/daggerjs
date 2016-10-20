@@ -4,16 +4,16 @@ var Dagger;
 	Dagger = function(selector) {
 		return Dagger.NodeList(selector);
 	};
-	
+
 	// Expose Dagger to the appropriate object -- `module.exports` in node.js or `window` in a browser
 	if (typeof module === 'object' && typeof module.exports === 'object') {
 		module.exports = Dagger;
 	} else {
 		this.Dagger = this.dg = Dagger;
 	}
-	
+
 	Dagger._version = 0.2;
-	
+
 }).call(this);
 
 
@@ -24,7 +24,7 @@ var Dagger;
 (function() {
 	var _readyAlready = document.readyState === 'complete';
 	var _readyCallbacks = [];
-	
+
 	var _handleReady = function() {
 		if (document.readyState === 'interactive' || _readyAlready) {
 			_readyAlready = true;
@@ -35,7 +35,7 @@ var Dagger;
 		}
 	};
 	document.onreadystatechange = _handleReady;
-	
+
 	// Exposed method
 	Dagger.ready = function(callback, context) {
 		_readyAlready ? callback(context) : _readyCallbacks.push([callback, context]);
@@ -51,7 +51,7 @@ var Dagger;
 // Declare the extend function first so we can use it to add the others
 Dagger.extend = function(sourceObj, targetObj) {
 	if (!targetObj) return sourceObj;
-	
+
 	for (var key in targetObj) {
 		sourceObj[key] = targetObj[key];
 	}
@@ -129,22 +129,22 @@ Dagger.extend(Dagger, {
 /**
  * DaggerJS - Dagger.require - Easily load script dependencies
  */
- (function() {
- 	// Exposed Method
- 	Dagger.require = function(dependencies, callback) {
- 		Dagger.isArray(dependencies) || (dependencies = [dependencies]);
- 		for (var i = 0; i < dependencies.length; i++) {
- 			
- 			var newScript = document.createElement('script');
- 			newScript.src = dependencies[i] + '.js';
- 			document.head.appendChild(newScript);
- 			
- 			newScript.onload = function(event) {
- 				console.log(this, event, 'here!');
- 			};
- 		}
- 	};
- })();
+(function() {
+	// Exposed Method
+	Dagger.require = function(dependencies, callback) {
+		Dagger.isArray(dependencies) || (dependencies = [dependencies]);
+		for (var i = 0; i < dependencies.length; i++) {
+
+			var newScript = document.createElement('script');
+			newScript.src = dependencies[i] + '.js';
+			document.head.appendChild(newScript);
+
+			newScript.onload = function(event) {
+				console.log(this, event, 'here!');
+			};
+		}
+	};
+})();
 
 
 
@@ -155,12 +155,12 @@ Dagger.extend(Dagger, {
 	var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	var shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 	var _date = '';
-	
+
 	// Used to grab digit groupings from the user's date
 	var _getNextDigits = function() {
 		var nextDigit = (_date.match(/\d/) || [])[0];
 		var index = _date.indexOf(nextDigit);
-		
+
 		if (/\d/.test(_date[index + 1])) {
 			var twoDigits = nextDigit + _date[index + 1];
 			_date = _date.replace(/\d\d/, '');
@@ -169,18 +169,18 @@ Dagger.extend(Dagger, {
 		_date = _date.replace(/\d/, '');
 		return nextDigit;
 	}
-	
+
 	// Turn the user's date into a JavaScript Date object.
 	var _parseDate = function(date) {
 		if (!isNaN(+date)) return new Date(+date);
 		_date = date;
-		
+
 		var year = (date.match(/\d{4}/) || [])[0];
 		_date = _date.replace(/\d{4}/, '');
 		if (!year) {
 			year = new Date().getFullYear();
 		}
-		
+
 		var month = -1;
 		dg.each(months, function(nextMonth, index) {
 			if (date.match(new RegExp(nextMonth.slice(0, 3), 'i'))) month = index;
@@ -190,22 +190,22 @@ Dagger.extend(Dagger, {
 			if (!month) month = 0;
 			else month = +month - 1;
 		}
-		
+
 		var day = _getNextDigits();
 		if (!day) return new Date(year, month);
-		
+
 		var hour = _getNextDigits();
 		if (!hour) return new Date(year, month, day);
-		
+
 		var minute = _getNextDigits();
 		if (!minute) return new Date(year, month, day, hour);
-		
+
 		var second = _getNextDigits();
 		if (!second) return new Date(year, month, day, hour, minute);
-		
+
 		return new Date(year, month, day, hour, minute, second);
 	};
-	
+
 	// Return the date in the user's specified format.
 	var _formatDate = function(date, format) {
 		return format.toUpperCase().replace('YYYY', date.getFullYear())
@@ -217,7 +217,7 @@ Dagger.extend(Dagger, {
 				.replace('MM', Dagger.padLeft(date.getMonth() + 1, '0', 2))
 				.replace('M', date.getMonth() + 1);
 	};
-	
+
 	// Exposed method
 	Dagger.date = function(dateIn, format) {
 		var date = _parseDate(dateIn);
